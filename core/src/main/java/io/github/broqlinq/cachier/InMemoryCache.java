@@ -32,14 +32,16 @@ public class InMemoryCache<V> implements Cache<V>, AutoCloseable {
         executor.scheduleWithFixedDelay(this::evictExpired, 5, 5, TimeUnit.SECONDS);
     }
 
-    private void evictExpired() {
+    public void evictExpired() {
         lock.lock();
         try {
-            for (var node = tail.prev; node != head; node = node.prev) {
+            for (var node = tail.prev; node != head;) {
+                var prev = node.prev;
                 if (System.currentTimeMillis() > node.expiresAt) {
                     cache.remove(node.key);
                     detachFully(node);
                 }
+                node = prev;
             }
         } finally {
             lock.unlock();
