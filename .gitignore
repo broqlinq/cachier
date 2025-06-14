@@ -1,4 +1,7 @@
 # IntelliJ
-.idea/
-.idea/*
 
+.idea/
+/shelf/
+/workspace.xml
+
+target/
